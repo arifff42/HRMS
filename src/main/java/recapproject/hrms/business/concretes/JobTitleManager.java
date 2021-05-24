@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import recapproject.hrms.business.abstracts.JobTitleService;
+import recapproject.hrms.core.utilities.results.DataResult;
+import recapproject.hrms.core.utilities.results.SuccessDataResult;
 import recapproject.hrms.dataAccess.abstracts.JobTitleDao;
 import recapproject.hrms.entities.concretes.JobTitle;
 
@@ -20,9 +22,8 @@ public class JobTitleManager implements JobTitleService {
 	}
 
 	@Override
-	public List<JobTitle> getAll() {
+	public DataResult<List<JobTitle>> getAll() {
 
-		return jobTitleDao.findAll();
+		return new SuccessDataResult<List<JobTitle>>(jobTitleDao.findAll(),"Ürünler Listelendi.");
 	}
-
 }

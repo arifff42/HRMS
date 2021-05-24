@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import recapproject.hrms.business.abstracts.JobTitleService;
+import recapproject.hrms.core.utilities.results.DataResult;
 import recapproject.hrms.entities.concretes.JobTitle;
 
 @RestController
@@ -21,7 +22,7 @@ public class JobTitlesController {
 	}
 
 	@GetMapping("/getall")
-	public List<JobTitle> getAll() {
+	public DataResult<List<JobTitle>> getAll() {
 
 		return jobTitleService.getAll();
 	};
