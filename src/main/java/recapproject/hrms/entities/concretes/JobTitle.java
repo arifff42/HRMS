@@ -1,5 +1,7 @@
 package recapproject.hrms.entities.concretes;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,17 +15,20 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name="job_titles")
+@Table(name = "job_titles")
 @AllArgsConstructor
 @NoArgsConstructor
 public class JobTitle {
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY )
-	
-	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+
+	@Column(name = "id")
 	private int id;
-	
-	@Column(name="title")
+
+	@Column(name = "title")
 	private String jobName;
+	
+	@Column(name = "create_date")
+	private LocalDate createDate = LocalDate.now();
 }

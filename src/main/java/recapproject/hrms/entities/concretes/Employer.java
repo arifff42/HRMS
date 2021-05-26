@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Table(name = "employers")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Employer {
@@ -30,9 +32,6 @@ public class Employer {
 
 	@Column(name = "phone_number")
 	private String phoneNumber;
-
-	@Column(name = "user_type_id")
-	private int userTypeId;
 
 	@Column(name = "user_id")
 	private int userId;
