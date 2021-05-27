@@ -16,5 +16,5 @@ public interface UserActivationByAdminUserService {
 	
 	DataResult<List<UserActivationByAdminUser>> getAll();
 	
-	DataResult<UserActivationByAdminUser> findById(int id);
+	DataResult<UserActivationByAdminUser> getById(int id);
 }

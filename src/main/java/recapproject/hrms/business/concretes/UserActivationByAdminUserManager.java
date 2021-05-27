@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import recapproject.hrms.business.abstracts.UserActivationByAdminUserService;
 import recapproject.hrms.core.utilities.results.DataResult;
 import recapproject.hrms.core.utilities.results.Result;
+import recapproject.hrms.core.utilities.results.SuccessDataResult;
+import recapproject.hrms.core.utilities.results.SuccessResult;
 import recapproject.hrms.dataAccess.abstracts.UserActivationByAdminUserDao;
 import recapproject.hrms.entities.concretes.UserActivationByAdminUser;
 
@@ -24,32 +26,39 @@ public class UserActivationByAdminUserManager implements UserActivationByAdminUs
 
 	@Override
 	public Result add(UserActivationByAdminUser userActivationByAdminUser) {
-		// TODO Auto-generated method stub
-		return null;
+
+		this.userActivationByAdminUserDao.save(userActivationByAdminUser);
+
+		return new SuccessResult("Ürün Eklendi.");
 	}
 
 	@Override
 	public Result update(UserActivationByAdminUser userActivationByAdminUser) {
-		// TODO Auto-generated method stub
-		return null;
+
+		this.userActivationByAdminUserDao.save(userActivationByAdminUser);
+
+		return new SuccessResult("Ürün Güncellendi.");
 	}
 
 	@Override
 	public Result delete(UserActivationByAdminUser userActivationByAdminUser) {
-		// TODO Auto-generated method stub
-		return null;
+
+		this.userActivationByAdminUserDao.delete(userActivationByAdminUser);
+
+		return new SuccessResult("Ürün Silindi.");
+	}
+
+	@Override
+	public DataResult<UserActivationByAdminUser> getById(int id) {
+
+		return new SuccessDataResult<UserActivationByAdminUser>(userActivationByAdminUserDao.getById(id),
+				"Ürünler Listelendi.");
 	}
 
 	@Override
 	public DataResult<List<UserActivationByAdminUser>> getAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public DataResult<UserActivationByAdminUser> findById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		return new SuccessDataResult<List<UserActivationByAdminUser>>(userActivationByAdminUserDao.findAll(),
+				"Ürünler Listelendi.");
 	}
-
 }

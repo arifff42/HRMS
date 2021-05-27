@@ -26,19 +26,25 @@ public class JobTitleManager implements JobTitleService {
 
 	@Override
 	public Result add(JobTitle jobTitle) {
+
 		this.jobTitleDao.save(jobTitle);
+
 		return new SuccessResult("Ürün Eklendi.");
 	}
 
 	@Override
 	public Result update(JobTitle jobTitle) {
+
 		this.jobTitleDao.save(jobTitle);
+
 		return new SuccessResult("Ürün Güncellendi.");
 	}
 
 	@Override
 	public Result delete(JobTitle jobTitle) {
+
 		this.jobTitleDao.delete(jobTitle);
+
 		return new SuccessResult("Ürün Silindi.");
 	}
 
@@ -49,9 +55,9 @@ public class JobTitleManager implements JobTitleService {
 	}
 
 	@Override
-	public DataResult<JobTitle> findById(int jobTitleId) {
+	public DataResult<JobTitle> getById(int jobTitleId) {
 
-		//return new SuccessDataResult<JobTitle>(jobTitleDao.findById(jobTitleId), "Ürün Geldi.");
-		return null;
+		return new SuccessDataResult<JobTitle>(jobTitleDao.getById(jobTitleId), "Ürün Geldi.");
+		// return null;
 	}
 }

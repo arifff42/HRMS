@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import recapproject.hrms.business.abstracts.AdminUserService;
 import recapproject.hrms.core.utilities.results.DataResult;
 import recapproject.hrms.core.utilities.results.Result;
+import recapproject.hrms.core.utilities.results.SuccessDataResult;
+import recapproject.hrms.core.utilities.results.SuccessResult;
 import recapproject.hrms.dataAccess.abstracts.AdminUserDao;
 import recapproject.hrms.entities.concretes.AdminUser;
 
@@ -24,33 +26,37 @@ public class AdminUserManager implements AdminUserService {
 
 	@Override
 	public Result add(AdminUser adminUser) {
-		// TODO Auto-generated method stub
-		return null;
+
+		this.adminUserDao.save(adminUser);
+
+		return new SuccessResult("Ürün Eklendi.");
 	}
 
 	@Override
 	public Result update(AdminUser adminUser) {
-		// TODO Auto-generated method stub
-		return null;
+
+		this.adminUserDao.save(adminUser);
+
+		return new SuccessResult("Ürün Güncellendi.");
 	}
 
 	@Override
 	public Result delete(AdminUser adminUser) {
-		// TODO Auto-generated method stub
-		return null;
+
+		this.adminUserDao.delete(adminUser);
+
+		return new SuccessResult("Ürün Silindi.");
 	}
 
 	@Override
-	public DataResult<AdminUser> findById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	public DataResult<AdminUser> getById(int id) {
+
+		return new SuccessDataResult<AdminUser>(adminUserDao.getById(id), "Ürünler Listelendi.");
 	}
-	
 
 	@Override
 	public DataResult<List<AdminUser>> getAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
+		return new SuccessDataResult<List<AdminUser>>(adminUserDao.findAll(), "Ürünler Listelendi.");
+	}
 }

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import recapproject.hrms.business.abstracts.UserService;
 import recapproject.hrms.core.utilities.results.DataResult;
 import recapproject.hrms.core.utilities.results.Result;
+import recapproject.hrms.core.utilities.results.SuccessDataResult;
+import recapproject.hrms.core.utilities.results.SuccessResult;
 import recapproject.hrms.dataAccess.abstracts.UserDao;
 import recapproject.hrms.entities.concretes.User;
 
@@ -24,32 +26,37 @@ public class UserManager implements UserService {
 
 	@Override
 	public Result add(User user) {
-		// TODO Auto-generated method stub
-		return null;
+
+		this.userDao.save(user);
+
+		return new SuccessResult("Ürün Eklendi.");
 	}
 
 	@Override
 	public Result update(User user) {
-		// TODO Auto-generated method stub
-		return null;
+
+		this.userDao.save(user);
+
+		return new SuccessResult("Ürün Güncellendi.");
 	}
 
 	@Override
 	public Result delete(User user) {
-		// TODO Auto-generated method stub
-		return null;
+
+		this.userDao.delete(user);
+
+		return new SuccessResult("Ürün Silindi.");
+	}
+
+	@Override
+	public DataResult<User> getById(int id) {
+
+		return new SuccessDataResult<User>(userDao.getById(id), "Ürünler Listelendi.");
 	}
 
 	@Override
 	public DataResult<List<User>> getAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public DataResult<User> findById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		return new SuccessDataResult<List<User>>(userDao.findAll(), "Ürünler Listelendi.");
 	}
-
 }

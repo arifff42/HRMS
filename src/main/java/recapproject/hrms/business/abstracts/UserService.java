@@ -16,5 +16,5 @@ public interface UserService {
 
 	DataResult<List<User>> getAll();
 	
-	DataResult<User> findById(int id);
+	DataResult<User> getById(int id);
 }

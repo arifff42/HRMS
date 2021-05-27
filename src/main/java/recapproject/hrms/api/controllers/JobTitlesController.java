@@ -14,7 +14,7 @@ import recapproject.hrms.core.utilities.results.Result;
 import recapproject.hrms.entities.concretes.JobTitle;
 
 @RestController
-@RequestMapping("/api/jobtitles")
+@RequestMapping("/api/jobtitles/")
 public class JobTitlesController {
 
 	private JobTitleService jobTitleService;
@@ -24,15 +24,33 @@ public class JobTitlesController {
 		this.jobTitleService = jobTitleService;
 	}
 
-	@GetMapping("/getall")
+	@GetMapping("getall")
 	public DataResult<List<JobTitle>> getAll() {
 
 		return jobTitleService.getAll();
 	};
+
+	@GetMapping("getById")
+	public DataResult<JobTitle> getById(int jobTitleId){
+		
+		return jobTitleService.getById(jobTitleId);
+	}
 	
-	 @PostMapping("/add")
-	 public Result add(@RequestBody JobTitle jobTitle) {
-		 
-		 return jobTitleService.add(jobTitle);
-	 }
+	@PostMapping("add")
+	public Result add(@RequestBody JobTitle jobTitle) {
+
+		return jobTitleService.add(jobTitle);
+	}
+
+	@PostMapping("update")
+	public Result update(@RequestBody JobTitle jobTitle) {
+		
+		return jobTitleService.update(jobTitle);
+	}
+
+	@PostMapping("delete")
+	public Result delete(@RequestBody JobTitle jobTitle) {
+		
+		return jobTitleService.delete(jobTitle);
+	}
 }

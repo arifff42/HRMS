@@ -16,6 +16,6 @@ public interface AdminUserService {
 
 	DataResult<List<AdminUser>> getAll();
 
-	DataResult<AdminUser> findById(int id);
+	DataResult<AdminUser> getById(int id);
 
 }
