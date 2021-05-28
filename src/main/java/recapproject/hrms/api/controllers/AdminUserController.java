@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import recapproject.hrms.business.abstracts.AdminUserService;
@@ -31,7 +32,7 @@ public class AdminUserController {
 	}
 
 	@GetMapping("getById")
-	public DataResult<AdminUser> getById(int adminUserId) {
+	public DataResult<AdminUser> getById(@RequestParam int adminUserId) {
 
 		return adminUserService.getById(adminUserId);
 	}

@@ -1,7 +1,5 @@
 package recapproject.hrms.entities.concretes;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,10 +31,10 @@ public class Employee {
 	private String lastName;
 
 	@Column(name = "identity_number")
-	private String nationalIdentity;
+	private long nationalIdentity;
 
 	@Column(name = "date_of_birth")
-	private Date dateOfYear;
+	private int dateOfYear;
 
 	@Column(name = "user_id")
 	private int userId;

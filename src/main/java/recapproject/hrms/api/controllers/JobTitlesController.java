@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import recapproject.hrms.business.abstracts.JobTitleService;
@@ -31,7 +32,7 @@ public class JobTitlesController {
 	};
 
 	@GetMapping("getById")
-	public DataResult<JobTitle> getById(int jobTitleId){
+	public DataResult<JobTitle> getById(@RequestParam int jobTitleId){
 		
 		return jobTitleService.getById(jobTitleId);
 	}
