@@ -2,7 +2,6 @@ package recapproject.hrms.adapters.mernis;
 
 import org.springframework.stereotype.Service;
 
-import lombok.var;
 import recapproject.hrms.core.utilities.business.BusinessRules;
 import recapproject.hrms.core.utilities.results.*;
 import recapproject.hrms.entities.concretes.Candidate;
@@ -14,23 +13,19 @@ public class MernisVerificationManager implements MernisVerificationService {
 
 	private FVAKPSPublicSoap mernisVerification = new FVAKPSPublicSoap();
 
-	public boolean checkMernisService(Candidate candidate) {
+	public Result checkMernisService(Candidate candidate) {
 
 		try {
 			if (mernisVerification.TCKimlikNoDogrula(Long.valueOf(candidate.getNationalId()), candidate.getFirstName(),
-					candidate.getLastName(), candidate.getDateOfBirth().getYear()) == true) {
+					candidate.getLastName(), candidate.getDateOfBirth().getYear())) {
 
-				return true;
-
+				return new SuccessResult("Mernis Doğrulandı.");
 			}
-		}
-
-		catch (Exception e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
+			
 			e.printStackTrace();
 		}
-
-		return false;
+		return new ErrorResult("Mernis Doğrulaması Yapılamadı.");
 	}
 
 	@Override

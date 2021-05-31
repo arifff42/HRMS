@@ -36,6 +36,12 @@ public class CandidateController {
 
 		return candidateService.getById(employeeId);
 	}
+	
+	@GetMapping("getByNationalId")
+	public DataResult<Candidate> getByNationalId(@RequestParam String nationalId) {
+		
+		return candidateService.getByNationalId(nationalId);
+	}
 
 	@PostMapping("add")
 	public Result add(@RequestBody Candidate candidate) {

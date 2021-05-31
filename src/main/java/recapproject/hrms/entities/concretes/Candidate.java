@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "candidates")
 @AllArgsConstructor
 @NoArgsConstructor
-@DynamicUpdate
+//@DynamicUpdate
 //@JsonIgnoreProperties({ "hibenateLazyInitializer", "handler", "users" })
 public class Candidate {
 

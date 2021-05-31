@@ -4,7 +4,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import lombok.experimental.var;
 import recapproject.hrms.entities.concretes.Candidate;
 import recapproject.hrms.adapters.mernis.MernisVerificationManager;
 import recapproject.hrms.business.abstracts.CandidateService;
@@ -31,10 +30,6 @@ public class CandidateManager implements CandidateService {
 	@Override
 	public Result add(Candidate candidate) {
 
-		// System.out.println(mernisServiceManager.TCKNValidation(employee.getNationalIdentity(),
-		// employee.getFirstName(),
-		// employee.getLastName(), employee.getDateOfYear()));
-
 		Candidate candidateAddInDB = new Candidate();
 
 		candidateAddInDB.setFirstName(CapitalizeFirstLetterofWord(candidate.getFirstName()));
@@ -45,36 +40,20 @@ public class CandidateManager implements CandidateService {
 
 		candidateAddInDB.setNationalId(candidate.getNationalId());
 
-		// this.candidateDao.save(candidateAddInDB);
-
-		// return new SuccessResult("Kişi Eklendi.");
-
-		var result = BusinessRules.run(checkUserExistsByNationalId(candidate),
-				this.mernisVerificationManager.checkIfRealPerson(candidate));
+		var result = BusinessRules.run(checkUserExistsByNationalId(candidateAddInDB),
+				this.mernisVerificationManager.checkMernisService(candidateAddInDB),
+				this.mernisVerificationManager.checkIfRealPerson(candidateAddInDB));
 
 		if (!result.isSuccess()) {
+
 			return new ErrorResult(result.getMessage());
-		}
-
-		// if (mernisVerificationManager.checkIfRealPerson(candidate) == new
-		// SuccessResult()) {
-
-		if (mernisVerificationManager.checkMernisService(candidate)) {
-
-			this.candidateDao.save(candidate);
-
-			return new SuccessResult("Kişi Eklendi.");
 
 		} else {
 
-			return new ErrorResult("Mernis Sistemine Kayıtlı Değil.");
+			this.candidateDao.save(candidateAddInDB);
+			return new SuccessResult("Kişi Eklendiiiiiiiiiiiiiiiiiii.");
 		}
-		
-		//this.candidateDao.save(candidate);
-		//return new SuccessResult("Kişi Eklendi.");
 	}
-
-	// private static Employee employeInDB;
 
 	@Override
 	public Result update(Candidate candidate) {
@@ -83,7 +62,7 @@ public class CandidateManager implements CandidateService {
 
 		candidateUpdateInDB.setFirstName(CapitalizeFirstLetterofWord(candidate.getFirstName()));
 
-		candidateUpdateInDB.setLastName(candidate.getLastName().toUpperCase());
+		candidateUpdateInDB.setLastName(UpperAllLetters(candidate.getLastName()));
 
 		candidateUpdateInDB.setDateOfBirth(candidate.getDateOfBirth());
 
@@ -119,13 +98,13 @@ public class CandidateManager implements CandidateService {
 	@Override
 	public DataResult<Candidate> getByNationalId(String nationalId) {
 
-		return new SuccessDataResult<Candidate>(candidateDao.findByNationalId(nationalId));
-
+		return new SuccessDataResult<Candidate>(candidateDao.getByNationalId(nationalId));
 	}
 
 	public String CapitalizeFirstLetterofSentence(String sentence) {
 
 		if (sentence == null || sentence == "") {
+
 			return null;
 		}
 
@@ -139,6 +118,7 @@ public class CandidateManager implements CandidateService {
 			String remainingLetters = word.substring(1);
 			capitalizeStr += firstLetter.toUpperCase() + remainingLetters + " ";
 		}
+
 		return capitalizeStr;
 	}
 
@@ -158,19 +138,30 @@ public class CandidateManager implements CandidateService {
 
 		// concantenate the first letter and remaining string
 		String firstLetterCapitalizedName = firstLetStr + remLetStr;
+
 		return firstLetterCapitalizedName;
+	}
+
+	public String UpperAllLetters(String letter) {
+
+		if (letter == null || letter == "") {
+			return null;
+		}
+
+		String result = letter.toUpperCase();
+
+		return result;
 	}
 
 	private Result checkUserExistsByNationalId(Candidate candidate) {
 
 		var candidateNationalId = getByNationalId(candidate.getNationalId());
+
 		if (candidateNationalId.getData() != null) {
-			
-			new ErrorResult("This identification number has been used before.");
+
+			new ErrorResult("Bu TCKN daha önce kullanılmış.");
 		}
 
-		return new SuccessResult();
-
+		return new SuccessResult("TCKN başarılı.");
 	}
-
 }
