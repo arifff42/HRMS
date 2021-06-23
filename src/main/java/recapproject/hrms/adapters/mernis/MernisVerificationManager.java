@@ -11,7 +11,9 @@ import java.time.LocalDate;
 @Service
 public class MernisVerificationManager implements MernisVerificationService {
 
-	private FVAKPSPublicSoap mernisVerification = new FVAKPSPublicSoap();
+	private final FVAKPSPublicSoap mernisVerification = new FVAKPSPublicSoap();
+	
+	
 
 	public Result checkMernisService(Candidate candidate) {
 
@@ -27,7 +29,7 @@ public class MernisVerificationManager implements MernisVerificationService {
 		}
 		return new ErrorResult("Mernis Doğrulaması Yapılamadı.");
 	}
-
+/*
 	@Override
 	public Result checkIfRealPerson(Candidate candidate) {
 
@@ -93,5 +95,5 @@ public class MernisVerificationManager implements MernisVerificationService {
 		}
 
 		return new SuccessResult("Birth of date validated.");
-	}
+	}*/
 }

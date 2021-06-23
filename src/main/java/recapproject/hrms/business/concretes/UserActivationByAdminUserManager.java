@@ -16,7 +16,7 @@ import recapproject.hrms.entities.concretes.UserActivationByAdminUser;
 @Service
 public class UserActivationByAdminUserManager implements UserActivationByAdminUserService {
 
-	private UserActivationByAdminUserDao userActivationByAdminUserDao;
+	private final UserActivationByAdminUserDao userActivationByAdminUserDao;
 
 	@Autowired
 	public UserActivationByAdminUserManager(UserActivationByAdminUserDao userActivationByAdminUserDao) {

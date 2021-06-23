@@ -13,13 +13,17 @@ import recapproject.hrms.core.utilities.results.ErrorResult;
 import recapproject.hrms.core.utilities.results.Result;
 import recapproject.hrms.core.utilities.results.SuccessDataResult;
 import recapproject.hrms.core.utilities.results.SuccessResult;
+import recapproject.hrms.core.validation.UserValidation;
 import recapproject.hrms.dataAccess.abstracts.CandidateDao;
 
 @Service
 public class CandidateManager implements CandidateService {
 
-	private CandidateDao candidateDao;
-	MernisVerificationManager mernisVerificationManager = new MernisVerificationManager();
+	private final CandidateDao candidateDao;
+	
+	UserValidation userValidation = new UserValidation(new MernisVerificationManager());
+	
+	//MernisVerificationManager mernisVerificationManager = new MernisVerificationManager();
 
 	@Autowired
 	public CandidateManager(CandidateDao candidateDao) {
@@ -39,10 +43,23 @@ public class CandidateManager implements CandidateService {
 		candidateAddInDB.setDateOfBirth(candidate.getDateOfBirth());
 
 		candidateAddInDB.setNationalId(candidate.getNationalId());
+		
+		candidateAddInDB.setEmail(candidate.getEmail());
+		
+		candidateAddInDB.setPassword(candidate.getPassword());
+		
+		candidateAddInDB.setPasswordAgain(candidate.getPasswordAgain());
+		
+		candidateAddInDB.setCreatedAt(candidate.getCreatedAt());
+		
+		candidateAddInDB.setDeleted(candidate.isDeleted());
+		
+		candidateAddInDB.setVerified(candidate.isVerified());
+		
 
 		var result = BusinessRules.run(checkUserExistsByNationalId(candidateAddInDB),
-				this.mernisVerificationManager.checkMernisService(candidateAddInDB),
-				this.mernisVerificationManager.checkIfRealPerson(candidateAddInDB));
+				this.userValidation.checkMernisService(candidateAddInDB),
+				this.userValidation.checkIfRealPerson(candidateAddInDB));
 
 		if (!result.isSuccess()) {
 
@@ -51,34 +68,55 @@ public class CandidateManager implements CandidateService {
 		} else {
 
 			this.candidateDao.save(candidateAddInDB);
-			return new SuccessResult("Kişi Eklendiiiiiiiiiiiiiiiiiii.");
+			return new SuccessResult("Kişi Eklendi.");
 		}
 	}
 
 	@Override
 	public Result update(Candidate candidate) {
 
-		Candidate candidateUpdateInDB = candidateDao.findById(candidate.getCandidateId()).get();
+		Candidate candidateAddInDB = new Candidate();
 
-		candidateUpdateInDB.setFirstName(CapitalizeFirstLetterofWord(candidate.getFirstName()));
+		candidateAddInDB.setFirstName(CapitalizeFirstLetterofWord(candidate.getFirstName()));
 
-		candidateUpdateInDB.setLastName(UpperAllLetters(candidate.getLastName()));
+		candidateAddInDB.setLastName(candidate.getLastName().toUpperCase());
 
-		candidateUpdateInDB.setDateOfBirth(candidate.getDateOfBirth());
+		candidateAddInDB.setDateOfBirth(candidate.getDateOfBirth());
 
-		candidateUpdateInDB.setNationalId(candidate.getNationalId());
+		candidateAddInDB.setNationalId(candidate.getNationalId());
+		
+		candidateAddInDB.setEmail(candidate.getEmail());
+		
+		candidateAddInDB.setPassword(candidate.getPassword());
+		
+		candidateAddInDB.setPasswordAgain(candidate.getPasswordAgain());
+		
+		candidateAddInDB.setCreatedAt(candidate.getCreatedAt());
+		
+		candidateAddInDB.setDeleted(candidate.isDeleted());
+		
+		candidateAddInDB.setVerified(candidate.isVerified());
+		
 
-		this.candidateDao.save(candidateUpdateInDB);
+		var result = BusinessRules.run(checkUserExistsByNationalId(candidateAddInDB),
+				this.userValidation.checkMernisService(candidateAddInDB),
+				this.userValidation.checkIfRealPerson(candidateAddInDB));
 
-		// this.employeeDao.save(employee);
+		if (!result.isSuccess()) {
 
-		return new SuccessResult("Ürün Güncellendi.");
+			return new ErrorResult(result.getMessage());
+
+		} else {
+
+			this.candidateDao.save(candidateAddInDB);
+			return new SuccessResult("Kişi Eklendi.");
+		}
 	}
 
 	@Override
-	public Result delete(Candidate employee) {
+	public Result delete(Candidate candidate) {
 
-		this.candidateDao.delete(employee);
+		this.candidateDao.delete(candidate);
 
 		return new SuccessResult("Ürün Silindi.");
 	}
@@ -98,9 +136,10 @@ public class CandidateManager implements CandidateService {
 	@Override
 	public DataResult<Candidate> getByNationalId(String nationalId) {
 
-		return new SuccessDataResult<Candidate>(candidateDao.getByNationalId(nationalId));
+		return new SuccessDataResult<Candidate>(this.candidateDao.getByNationalId(nationalId), "getByNationalId Data Listelendi.");
 	}
-
+	
+	
 	public String CapitalizeFirstLetterofSentence(String sentence) {
 
 		if (sentence == null || sentence == "") {
@@ -108,7 +147,7 @@ public class CandidateManager implements CandidateService {
 			return null;
 		}
 
-		String words[] = sentence.split("\\s");
+		String[] words = sentence.split("\\s");
 		String capitalizeStr = "";
 
 		for (String word : words) {

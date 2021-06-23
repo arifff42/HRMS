@@ -18,7 +18,7 @@ import recapproject.hrms.entities.concretes.AdminUser;
 @RequestMapping("/api/adminusercontroller/")
 public class AdminUserController {
 
-	private AdminUserService adminUserService;
+	private final AdminUserService adminUserService;
 
 	public AdminUserController(AdminUserService adminUserService) {
 

@@ -7,7 +7,7 @@ import recapproject.hrms.entities.concretes.Candidate;
 
 public interface CandidateDao extends JpaRepository<Candidate,Integer>{
 	
-	@Query("from Candidate where nationalId=:nationalId")
-	Candidate getByNationalId(String nationalId);
+	@Query("from Candidate where nationalId=:nationalIdd")
+	Candidate getByNationalId(String nationalIdd);
 
 }

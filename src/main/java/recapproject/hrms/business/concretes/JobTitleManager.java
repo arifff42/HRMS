@@ -16,7 +16,7 @@ import recapproject.hrms.entities.concretes.JobTitle;
 @Service
 public class JobTitleManager implements JobTitleService {
 
-	private JobTitleDao jobTitleDao;
+	private final JobTitleDao jobTitleDao;
 
 	@Autowired
 	public JobTitleManager(JobTitleDao jobTitleDao) {

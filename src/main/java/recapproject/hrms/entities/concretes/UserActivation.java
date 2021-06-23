@@ -1,15 +1,12 @@
 package recapproject.hrms.entities.concretes;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.DynamicUpdate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,24 +18,27 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
+
 public class UserActivation {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
-	@Column(name = "id")
-	private int id;
+	@Column(name = "activation_id", unique = true, nullable = false)
+	private int activationId;
 
-	@Column(name = "activation_code")
+	@Column(name = "activation_code", updatable = false, nullable = false)
 	private String activationCode;
 
-	@Column(name = "is_confirmed")
-	private boolean isConfirmed;
+	@Column(name = "is_confirmed", updatable = true, nullable = false)
+	private boolean isConfirmed = false;
 
-	@Column(name = "confirmation_date")
-	private Date confirmationDate;
+	@Column(name = "confirmation_date", updatable = true, nullable = false)
+	private LocalDate confirmationDate;
 
-	@Column(name = "user_id")
-	private int userId;
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User userId;
 
 }

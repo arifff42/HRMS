@@ -26,8 +26,8 @@ public class UserActivationByAdminUser {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
-	@Column(name = "id")
-	private int id;
+	@Column(name = "admin_activation_id")
+	private int adminActivationId;
 
 	@Column(name = "confirmed_admin_id")
 	private int confirmedAdminId;

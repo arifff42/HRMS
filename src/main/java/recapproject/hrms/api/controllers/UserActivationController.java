@@ -18,7 +18,7 @@ import recapproject.hrms.entities.concretes.UserActivation;
 @RequestMapping("/api/useractivation/")
 public class UserActivationController {
 
-	private UserActivationService userActivationService;
+	private final UserActivationService userActivationService;
 
 	public UserActivationController(UserActivationService userActivationService) {
 
@@ -29,9 +29,9 @@ public class UserActivationController {
 	public DataResult<List<UserActivation>> getAll() {
 
 		return userActivationService.getAll();
-	};
+	}
 
-	@GetMapping("getById")
+    @GetMapping("getById")
 	public DataResult<UserActivation> getById(@RequestParam int userActivationId) {
 
 		return userActivationService.getById(userActivationId);

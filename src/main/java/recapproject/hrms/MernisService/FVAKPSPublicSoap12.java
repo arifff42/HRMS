@@ -185,7 +185,7 @@ public class FVAKPSPublicSoap12
                     return Boolean.valueOf(j.toString());
                 }
                 else if (obj!= null && obj instanceof Boolean){
-                    return (Boolean)obj;
+                    return obj;
                 }
                 return null;
             }

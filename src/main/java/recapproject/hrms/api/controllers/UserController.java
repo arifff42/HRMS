@@ -18,7 +18,7 @@ import recapproject.hrms.entities.concretes.User;
 @RequestMapping("/api/user/")
 public class UserController {
 
-	private UserService userService;
+	private final UserService userService;
 
 	public UserController(UserService userService) {
 
@@ -29,9 +29,9 @@ public class UserController {
 	public DataResult<List<User>> getAll() {
 
 		return userService.getAll();
-	};
+	}
 
-	@GetMapping("getById")
+    @GetMapping("getById")
 	public DataResult<User> getById(@RequestParam int userId) {
 
 		return userService.getById(userId);

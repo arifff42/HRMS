@@ -16,7 +16,7 @@ import recapproject.hrms.entities.concretes.AdminUser;
 @Service
 public class AdminUserManager implements AdminUserService {
 
-	private AdminUserDao adminUserDao;
+	private final AdminUserDao adminUserDao;
 
 	@Autowired
 	public AdminUserManager(AdminUserDao adminUserDao) {

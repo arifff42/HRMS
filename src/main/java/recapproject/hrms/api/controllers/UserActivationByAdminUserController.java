@@ -18,7 +18,7 @@ import recapproject.hrms.entities.concretes.UserActivationByAdminUser;
 @RequestMapping("/api/useractivationbyadminusercontroller/")
 public class UserActivationByAdminUserController {
 
-	private UserActivationByAdminUserService userActivationByAdminUserService;
+	private final UserActivationByAdminUserService userActivationByAdminUserService;
 
 	public UserActivationByAdminUserController(UserActivationByAdminUserService userActivationByAdminUserService) {
 

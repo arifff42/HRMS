@@ -18,7 +18,7 @@ import recapproject.hrms.entities.concretes.Employer;
 @RequestMapping("/api/employercontroller/")
 public class EmployerController {
 
-	private EmployerService employerService;
+	private final EmployerService employerService;
 
 	public EmployerController(EmployerService employerService) {
 

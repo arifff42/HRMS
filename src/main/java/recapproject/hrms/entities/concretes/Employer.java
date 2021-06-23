@@ -1,42 +1,37 @@
 package recapproject.hrms.entities.concretes;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.DynamicUpdate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "employers")
+@PrimaryKeyJoinColumn(name = "user_id")
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
-public class Employer {
+@EqualsAndHashCode(callSuper = false)
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+public class Employer extends User {
 
-	@Column(name = "id")
-	private int id;
+	// @Id
+	/*@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "employer_id", unique = true, nullable = false)
+	private int employerId;*/
 
-	@Column(name = "company_name")
+	@Column(name = "company_name", updatable = true, nullable = false)
 	private String companyName;
 
-	@Column(name = "web_address")
+	@Column(name = "web_address", updatable = true, nullable = false)
 	private String webAddress;
 
-	@Column(name = "phone_number")
+	@Column(name = "phone_number", updatable = true, nullable = false)
 	private String phoneNumber;
-
-	@Column(name = "user_id")
-	private int userId;
 
 }

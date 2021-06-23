@@ -18,7 +18,7 @@ import recapproject.hrms.entities.concretes.JobTitle;
 @RequestMapping("/api/jobtitles/")
 public class JobTitlesController {
 
-	private JobTitleService jobTitleService;
+	private final JobTitleService jobTitleService;
 
 	public JobTitlesController(JobTitleService jobTitleService) {
 
@@ -29,9 +29,9 @@ public class JobTitlesController {
 	public DataResult<List<JobTitle>> getAll() {
 
 		return jobTitleService.getAll();
-	};
+	}
 
-	@GetMapping("getById")
+    @GetMapping("getById")
 	public DataResult<JobTitle> getById(@RequestParam int jobTitleId){
 		
 		return jobTitleService.getById(jobTitleId);

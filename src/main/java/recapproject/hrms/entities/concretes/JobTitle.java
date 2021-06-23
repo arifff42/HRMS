@@ -26,7 +26,7 @@ public class JobTitle {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
-	@Column(name = "id")
+	@Column(name = "job_title_id")
 	private int id;
 
 	@Column(name = "title")

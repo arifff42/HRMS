@@ -15,10 +15,10 @@ import recapproject.hrms.core.utilities.results.Result;
 import recapproject.hrms.entities.concretes.Candidate;
 
 @RestController
-@RequestMapping("/api/employeecontroller/")
+@RequestMapping("/api/candidatecontroller/")
 public class CandidateController {
 
-	private CandidateService candidateService;
+	private final CandidateService candidateService;
 
 	public CandidateController(CandidateService candidateService) {
 

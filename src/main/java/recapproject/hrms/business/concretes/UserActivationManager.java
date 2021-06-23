@@ -16,7 +16,7 @@ import recapproject.hrms.entities.concretes.UserActivation;
 @Service
 public class UserActivationManager implements UserActivationService {
 
-	private UserActivationDao userActivationDao;
+	private final UserActivationDao userActivationDao;
 
 	@Autowired
 	public UserActivationManager(UserActivationDao userActivationDao) {

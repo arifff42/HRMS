@@ -5,5 +5,7 @@ import recapproject.hrms.entities.concretes.Candidate;
 
 public interface MernisVerificationService {
 
-    Result checkIfRealPerson(Candidate candidate);
+    //Result checkIfRealPerson(Candidate candidate);
+    
+    Result checkMernisService(Candidate candidate);
 }
