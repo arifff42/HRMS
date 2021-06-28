@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import recapproject.hrms.business.abstracts.UserService;
 import recapproject.hrms.entities.concretes.Candidate;
 import recapproject.hrms.adapters.mernis.MernisVerificationManager;
 import recapproject.hrms.business.abstracts.CandidateService;
@@ -15,20 +16,23 @@ import recapproject.hrms.core.utilities.results.SuccessDataResult;
 import recapproject.hrms.core.utilities.results.SuccessResult;
 import recapproject.hrms.core.validation.UserValidation;
 import recapproject.hrms.dataAccess.abstracts.CandidateDao;
+import recapproject.hrms.entities.concretes.User;
 
 @Service
 public class CandidateManager implements CandidateService {
 
 	private final CandidateDao candidateDao;
+	private UserService userService;
 	
 	UserValidation userValidation = new UserValidation(new MernisVerificationManager());
 	
 	//MernisVerificationManager mernisVerificationManager = new MernisVerificationManager();
 
 	@Autowired
-	public CandidateManager(CandidateDao candidateDao) {
+	public CandidateManager(CandidateDao candidateDao, UserService userService) {
 
 		this.candidateDao = candidateDao;
+		this.userService = userService;
 	}
 
 	@Override
@@ -36,14 +40,14 @@ public class CandidateManager implements CandidateService {
 
 		Candidate candidateAddInDB = new Candidate();
 
-		candidateAddInDB.setFirstName(CapitalizeFirstLetterofWord(candidate.getFirstName()));
+		candidateAddInDB.setFirstName(this.userValidation.CapitalizeFirstLetterofWord(candidate.getFirstName()));
 
 		candidateAddInDB.setLastName(candidate.getLastName().toUpperCase());
 
 		candidateAddInDB.setDateOfBirth(candidate.getDateOfBirth());
 
 		candidateAddInDB.setNationalId(candidate.getNationalId());
-		
+
 		candidateAddInDB.setEmail(candidate.getEmail());
 		
 		candidateAddInDB.setPassword(candidate.getPassword());
@@ -57,9 +61,11 @@ public class CandidateManager implements CandidateService {
 		candidateAddInDB.setVerified(candidate.isVerified());
 		
 
-		var result = BusinessRules.run(checkUserExistsByNationalId(candidateAddInDB),
-				this.userValidation.checkMernisService(candidateAddInDB),
-				this.userValidation.checkIfRealPerson(candidateAddInDB));
+		var result = BusinessRules.run(CheckUserExistsByNationalId(candidateAddInDB)
+				,this.userValidation.checkMernisService(candidateAddInDB)
+				,this.userValidation.checkIfRealPerson(candidateAddInDB)
+				,this.userService.checkDBEmails(candidateAddInDB.getEmail())
+				,this.userValidation.checkPasswords(candidateAddInDB.getPassword(), candidateAddInDB.getPasswordAgain()));
 
 		if (!result.isSuccess()) {
 
@@ -75,32 +81,32 @@ public class CandidateManager implements CandidateService {
 	@Override
 	public Result update(Candidate candidate) {
 
-		Candidate candidateAddInDB = new Candidate();
+		Candidate candidateUpdateInDB = new Candidate();
 
-		candidateAddInDB.setFirstName(CapitalizeFirstLetterofWord(candidate.getFirstName()));
+		candidateUpdateInDB.setFirstName(this.userValidation.CapitalizeFirstLetterofWord(candidate.getFirstName()));
 
-		candidateAddInDB.setLastName(candidate.getLastName().toUpperCase());
+		candidateUpdateInDB.setLastName(candidate.getLastName().toUpperCase());
 
-		candidateAddInDB.setDateOfBirth(candidate.getDateOfBirth());
+		candidateUpdateInDB.setDateOfBirth(candidate.getDateOfBirth());
 
-		candidateAddInDB.setNationalId(candidate.getNationalId());
-		
-		candidateAddInDB.setEmail(candidate.getEmail());
-		
-		candidateAddInDB.setPassword(candidate.getPassword());
-		
-		candidateAddInDB.setPasswordAgain(candidate.getPasswordAgain());
-		
-		candidateAddInDB.setCreatedAt(candidate.getCreatedAt());
-		
-		candidateAddInDB.setDeleted(candidate.isDeleted());
-		
-		candidateAddInDB.setVerified(candidate.isVerified());
+		candidateUpdateInDB.setNationalId(candidate.getNationalId());
+
+		candidateUpdateInDB.setEmail(candidate.getEmail());
+
+		candidateUpdateInDB.setPassword(candidate.getPassword());
+
+		candidateUpdateInDB.setPasswordAgain(candidate.getPasswordAgain());
+
+		candidateUpdateInDB.setCreatedAt(candidate.getCreatedAt());
+
+		candidateUpdateInDB.setDeleted(candidate.isDeleted());
+
+		candidateUpdateInDB.setVerified(candidate.isVerified());
 		
 
-		var result = BusinessRules.run(checkUserExistsByNationalId(candidateAddInDB),
-				this.userValidation.checkMernisService(candidateAddInDB),
-				this.userValidation.checkIfRealPerson(candidateAddInDB));
+		var result = BusinessRules.run(CheckUserExistsByNationalId(candidateUpdateInDB),
+				this.userValidation.checkMernisService(candidateUpdateInDB),
+				this.userValidation.checkIfRealPerson(candidateUpdateInDB));
 
 		if (!result.isSuccess()) {
 
@@ -108,7 +114,7 @@ public class CandidateManager implements CandidateService {
 
 		} else {
 
-			this.candidateDao.save(candidateAddInDB);
+			this.candidateDao.save(candidateUpdateInDB);
 			return new SuccessResult("Kişi Eklendi.");
 		}
 	}
@@ -138,69 +144,30 @@ public class CandidateManager implements CandidateService {
 
 		return new SuccessDataResult<Candidate>(this.candidateDao.getByNationalId(nationalId), "getByNationalId Data Listelendi.");
 	}
-	
-	
-	public String CapitalizeFirstLetterofSentence(String sentence) {
+	private Result CheckUserExistsByNationalId(Candidate candidate) {
 
-		if (sentence == null || sentence == "") {
+		List<Candidate> nationalIds = candidateDao.findAll();
 
-			return null;
+		for (Candidate nationalId: nationalIds) {
+
+			if (nationalId.getNationalId().equals(candidate.getNationalId())) {
+				return new ErrorResult("Bu TCKN daha önce kullanılmış.");
+			}
 		}
+		return new SuccessResult("CheckUserExistsByNationalId TCKN başarılı.");
 
-		String[] words = sentence.split("\\s");
-		String capitalizeStr = "";
-
-		for (String word : words) {
-			// Capitalize first letter
-			String firstLetter = word.substring(0, 1);
-			// Get remaining letter
-			String remainingLetters = word.substring(1);
-			capitalizeStr += firstLetter.toUpperCase() + remainingLetters + " ";
-		}
-
-		return capitalizeStr;
-	}
-
-	public String CapitalizeFirstLetterofWord(String word) {
-
-		if (word == null || word == "") {
-			return null;
-		}
-
-		// get First letter of the string
-		String firstLetStr = word.substring(0, 1);
-		// Get remaining letter using substring
-		String remLetStr = word.substring(1);
-
-		// convert the first letter of String to uppercase
-		firstLetStr = firstLetStr.toUpperCase();
-
-		// concantenate the first letter and remaining string
-		String firstLetterCapitalizedName = firstLetStr + remLetStr;
-
-		return firstLetterCapitalizedName;
-	}
-
-	public String UpperAllLetters(String letter) {
-
-		if (letter == null || letter == "") {
-			return null;
-		}
-
-		String result = letter.toUpperCase();
-
-		return result;
-	}
-
-	private Result checkUserExistsByNationalId(Candidate candidate) {
-
-		var candidateNationalId = getByNationalId(candidate.getNationalId());
+		/*var candidateNationalId = getByNationalId(candidate.getNationalId());
 
 		if (candidateNationalId.getData() != null) {
 
 			new ErrorResult("Bu TCKN daha önce kullanılmış.");
 		}
 
-		return new SuccessResult("TCKN başarılı.");
+		return new SuccessResult("TCKN başarılı.");*/
+
+
+
 	}
+	
+
 }

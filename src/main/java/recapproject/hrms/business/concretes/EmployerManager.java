@@ -1,5 +1,6 @@
 package recapproject.hrms.business.concretes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import recapproject.hrms.adapters.mernis.MernisVerificationManager;
 import recapproject.hrms.business.abstracts.EmployerService;
+import recapproject.hrms.business.abstracts.UserService;
 import recapproject.hrms.core.utilities.business.BusinessRules;
 import recapproject.hrms.core.utilities.results.DataResult;
 import recapproject.hrms.core.utilities.results.ErrorResult;
@@ -22,13 +24,15 @@ import recapproject.hrms.entities.concretes.User;
 public class EmployerManager implements EmployerService {
 
 	private final EmployerDao employerDao;
+	private UserService userService;
 	
 	UserValidation userValidation = new UserValidation(new MernisVerificationManager());
 
 	@Autowired
-	public EmployerManager(EmployerDao employerDao) {
+	public EmployerManager(EmployerDao employerDao, UserService userService) {
 
 		this.employerDao = employerDao;
+		this.userService = userService;
 	}
 
 	@Override
@@ -37,8 +41,8 @@ public class EmployerManager implements EmployerService {
 		Employer  employerAddInDB = new Employer();
 
 		employerAddInDB.setCompanyName(CapitalizeFirstLetterofWord(employer.getCompanyName()));
-		
-		employerAddInDB.setEmail(employer.getEmail().toString());
+
+		employerAddInDB.setEmail(employer.getEmail());
 		
 		employerAddInDB.setWebAddress(employer.getWebAddress());
 
@@ -54,7 +58,9 @@ public class EmployerManager implements EmployerService {
 		
 		employerAddInDB.setVerified(employer.isVerified());
 		
-		var result = BusinessRules.run(userValidation.checkEmail(employerAddInDB));
+		var result = BusinessRules.run(this.userValidation.checkEmail(employerAddInDB)
+				,this.userValidation.checkPasswords(employerAddInDB.getPassword(), employerAddInDB.getPasswordAgain())
+				,this.userService.checkDBEmails(employerAddInDB.getEmail()));
 
 		if (!result.isSuccess()) {
 
@@ -136,5 +142,7 @@ public class EmployerManager implements EmployerService {
 
 		return firstLetterCapitalizedName;
 	}
+
+
 
 }

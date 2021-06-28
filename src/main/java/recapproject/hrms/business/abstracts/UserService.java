@@ -17,4 +17,6 @@ public interface UserService {
 	DataResult<List<User>> getAll();
 	
 	DataResult<User> getById(int id);
+
+	Result checkDBEmails(String usermail);
 }

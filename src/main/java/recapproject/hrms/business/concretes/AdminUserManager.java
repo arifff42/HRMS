@@ -5,11 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import recapproject.hrms.adapters.mernis.MernisVerificationManager;
 import recapproject.hrms.business.abstracts.AdminUserService;
-import recapproject.hrms.core.utilities.results.DataResult;
-import recapproject.hrms.core.utilities.results.Result;
-import recapproject.hrms.core.utilities.results.SuccessDataResult;
-import recapproject.hrms.core.utilities.results.SuccessResult;
+import recapproject.hrms.business.abstracts.UserService;
+import recapproject.hrms.core.utilities.business.BusinessRules;
+import recapproject.hrms.core.utilities.results.*;
+import recapproject.hrms.core.validation.UserValidation;
 import recapproject.hrms.dataAccess.abstracts.AdminUserDao;
 import recapproject.hrms.entities.concretes.AdminUser;
 
@@ -17,19 +18,53 @@ import recapproject.hrms.entities.concretes.AdminUser;
 public class AdminUserManager implements AdminUserService {
 
 	private final AdminUserDao adminUserDao;
+	private UserService userService;
+
+	UserValidation userValidation = new UserValidation(new MernisVerificationManager());
 
 	@Autowired
-	public AdminUserManager(AdminUserDao adminUserDao) {
+	public AdminUserManager(AdminUserDao adminUserDao, UserService userService) {
 
 		this.adminUserDao = adminUserDao;
+		this.userService = userService;
 	}
 
 	@Override
 	public Result add(AdminUser adminUser) {
 
-		this.adminUserDao.save(adminUser);
+		AdminUser adminUserAddDB = new AdminUser();
 
-		return new SuccessResult("Ürün Eklendi.");
+		adminUserAddDB.setFirstName(userValidation.CapitalizeFirstLetterofWord(adminUser.getFirstName()));
+
+		adminUserAddDB.setLastName(adminUser.getLastName().toUpperCase());
+
+		adminUserAddDB.setEmail(adminUser.getEmail());
+
+		adminUserAddDB.setPassword(adminUser.getPassword());
+
+		adminUserAddDB.setPasswordAgain(adminUser.getPasswordAgain());
+
+		adminUserAddDB.setCreatedAt(adminUser.getCreatedAt());
+
+		adminUserAddDB.setDeleted(adminUser.isDeleted());
+
+		adminUserAddDB.setVerified(adminUser.isVerified());
+
+		var result = BusinessRules.run(this.userService.checkDBEmails(adminUserAddDB.getEmail())
+		,this.userValidation.checkPasswords(adminUserAddDB.getPassword(), adminUserAddDB.getPasswordAgain()));
+
+		if (!result.isSuccess()) {
+
+			return new ErrorResult(result.getMessage());
+
+		} else {
+
+			this.adminUserDao.save(adminUser);
+
+			return new SuccessResult("Ürün Eklendi.");
+		}
+
+
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package recapproject.hrms.business.concretes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,13 @@ public class UserManager implements UserService {
 	@Override
 	public Result add(User user) {
 
-		User  userAddInDB = new User();
-		
-		userAddInDB.setEmail(user.getEmail().toString());
+		User userAddInDB = new User();
+
+		if (!checkDBEmails(userAddInDB.getEmail()).isSuccess()) {
+			return new ErrorResult(checkDBEmails(userAddInDB.getEmail()).getMessage());
+		}
+
+		userAddInDB.setEmail(user.getEmail());
 		
 		userAddInDB.setPassword(user.getPassword());
 		
@@ -60,7 +65,6 @@ public class UserManager implements UserService {
 			this.userDao.save(userAddInDB);
 			return new SuccessResult("Kullanıcı Eklendi.");
 		}
-		
 	}
 
 	@Override
@@ -90,4 +94,20 @@ public class UserManager implements UserService {
 
 		return new SuccessDataResult<List<User>>(userDao.findAll(), "Ürünler Listelendi.");
 	}
+
+	@Override
+	public Result checkDBEmails(String usermail){
+
+		List<User> emails = userDao.findAll();
+
+		for (User email: emails) {
+
+			if (email.getEmail().equals(usermail)) {
+				return new ErrorResult("Email daha önce kayıt olmuş.");
+			}
+		}
+		return new SuccessResult("checkDBEmails Email daha önce kayıt olmamış");
+	}
+
+
 }

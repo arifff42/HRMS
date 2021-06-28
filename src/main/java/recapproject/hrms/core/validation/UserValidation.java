@@ -3,12 +3,15 @@ package recapproject.hrms.core.validation;
 import recapproject.hrms.adapters.mernis.MernisVerificationManager;
 import recapproject.hrms.core.utilities.business.BusinessRules;
 import recapproject.hrms.core.utilities.results.*;
+import recapproject.hrms.dataAccess.abstracts.UserDao;
 import recapproject.hrms.entities.concretes.Candidate;
 import recapproject.hrms.entities.concretes.Employer;
+import recapproject.hrms.entities.concretes.User;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +34,6 @@ public class UserValidation {
 		}
 
 		return new ErrorResult("Mernis Doğrulanamadı.");
-
 	}
 
 	public Result checkIfRealPerson(Candidate candidate) {
@@ -110,9 +112,10 @@ public class UserValidation {
 		String email = employer.getEmail();
 		String domain = email.substring(email.indexOf("@") + 1);
 
+
         if (matchEmail.matches()) {
 
-            if (domain == getDomainName(employer).getData()) {
+            if (domain.equals(getDomainName(employer).getData())) {
 
                 return new SuccessResult("Email kontrolü sağlandı " + getDomainName(employer).getMessage() + domain + getDomainName(employer).getData());
 
@@ -125,15 +128,23 @@ public class UserValidation {
         return new ErrorResult("Lütfen email adresinizi kontrol ediniz.");
     }
 
-	private String domain;
+	public Result checkPasswords(String password, String passwordAgain){
+
+			if (!password.equals(passwordAgain)) {
+				return new ErrorResult("Şifreler uyuşmuyor. Lütfen Kontrol ediniz.");
+			}
+
+		return new SuccessResult("checkPasswords Şifreler uyuşuyor.");
+	}
 
     private DataResult<String> getDomainName(Employer employer) {
+
 
         try {
 
 			URL url = new URL("https://" +employer.getWebAddress());
 
-             domain = url.getHost();
+             String domain = url.getHost();
 
             //System.out.println(domain);
 
@@ -151,8 +162,61 @@ public class UserValidation {
 
         } catch (MalformedURLException e) {
 
-            return new ErrorDataResult<>(null, "Lütfen web adresinizi adresinizi kontrol ediniz. " + domain +" "+ employer.getWebAddress());
-
+            return new ErrorDataResult<>(null, "Lütfen web adresinizi adresinizi kontrol ediniz.");
         }
     }
+
+	public String CapitalizeFirstLetterofSentence(String sentence) {
+
+		if (sentence == null || sentence == "") {
+
+			return null;
+		}
+
+		String[] words = sentence.split("\\s");
+		String capitalizeStr = "";
+
+		for (String word : words) {
+			// Capitalize first letter
+			String firstLetter = word.substring(0, 1);
+			// Get remaining letter
+			String remainingLetters = word.substring(1);
+			capitalizeStr += firstLetter.toUpperCase() + remainingLetters + " ";
+		}
+
+		return capitalizeStr;
+	}
+
+	public String CapitalizeFirstLetterofWord(String word) {
+
+		if (word == null || word == "") {
+			return null;
+		}
+
+		// get First letter of the string
+		String firstLetStr = word.substring(0, 1);
+		// Get remaining letter using substring
+		String remLetStr = word.substring(1);
+
+		// convert the first letter of String to uppercase
+		firstLetStr = firstLetStr.toUpperCase();
+
+		// concantenate the first letter and remaining string
+		String firstLetterCapitalizedName = firstLetStr + remLetStr;
+
+		return firstLetterCapitalizedName;
+	}
+
+	public String UpperAllLetters(String letter) {
+
+		if (letter == null || letter == "") {
+			return null;
+		}
+
+		String result = letter.toUpperCase();
+
+		return result;
+	}
+
+
 }
